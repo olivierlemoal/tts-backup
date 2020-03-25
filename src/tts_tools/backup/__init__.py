@@ -65,10 +65,9 @@ def backup_json(args):
             try:
                 filename = get_fs_path(path, url)
             except NoImageExtensionException as e:
-                if args.ignore_missing:
-                    print("Missing image extension for {} (not found)".format(e.filename_no_ext))
-                else:
-                    raise FileNotFoundError("No such file: {}".format(e.filename_no_ext))
+                print_err("Missing image extension for {} (not found)".format(e.filename_no_ext))
+                if not args.ignore_missing:
+                    sys.exit(1)
 
             try:
                 outfile.write(filename)
@@ -93,7 +92,12 @@ def backup_json(args):
         # Store thumbnail image
         thumbnail_name = json_filename.replace(".json", ".png")
         thumbnail = os.path.join(orig_path, args.infile_name.replace(".json", ".png"))
-        outfile.write(thumbnail, "Mods/Workshop/" + thumbnail_name)
+        try:
+            outfile.write(thumbnail, "Mods/Workshop/" + thumbnail_name)
+        except FileNotFoundError:
+            print_err("Could not find thumbnail")
+            if not args.ignore_missing:
+                sys.exit(1)
 
         # Store some metadata.
         outfile.put_metadata(comment=args.comment)
