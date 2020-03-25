@@ -7,9 +7,14 @@ IMGPATH = os.path.join("Mods", "Images")
 OBJPATH = os.path.join("Mods", "Models")
 BUNDLEPATH = os.path.join("Mods", "Assetbundles")
 
-GAMEDATA_DEFAULT = os.path.expanduser(
-    "~/Documents/My Games/Tabletop Simulator"
-)
+if os.name == 'nt':
+    GAMEDATA_DEFAULT = os.path.expanduser(
+        "~/Documents/My Games/Tabletop Simulator"
+    )
+elif os.name == 'posix':
+    GAMEDATA_DEFAULT = os.path.expanduser(
+        "~/.local/share/Tabletop Simulator"
+    )
 
 
 def seekURL(dic, trail=[]):
