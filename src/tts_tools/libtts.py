@@ -17,6 +17,13 @@ elif os.name == 'posix':
     )
 
 
+class NoImageExtensionException(Exception):
+
+    def __init__(self, filename_no_ext):
+        super().__init__(self)
+        self.filename_no_ext = filename_no_ext
+
+
 def seekURL(dic, trail=[]):
     """Recursively search through the save game structure and return URLs
     and the paths to them.
@@ -93,12 +100,19 @@ def get_fs_path(path, url):
         return os.path.join(BUNDLEPATH, filename)
 
     elif is_image(path, url):
-        # TTS appears to perform some weird heuristics when determining
-        # the file suffix. ._.
-        if url.find(".png") > 0:
+        # Find local image
+        filename = find_image(url)
+        if filename:
+            return filename
+
+        if ".png" in url:
             file_suffix = ".png"
-        else:
+        elif ".jpeg" in url or ".jpg" in url:
             file_suffix = ".jpg"
+        else:
+            filename_no_ext = os.path.join(IMGPATH, recoded_name)
+            raise NoImageExtensionException(filename_no_ext)
+
         filename = recoded_name + file_suffix
         return os.path.join(IMGPATH, filename)
 
@@ -107,6 +121,17 @@ def get_fs_path(path, url):
                   "URL {url} at {path}.".format(url=url, path=path))
         raise ValueError(errstr)
 
+
+def find_image(url):
+    # Determin if file exists
+    recoded_name = recodeURL(url)
+
+    image_path_no_ext = os.path.join(GAMEDATA_DEFAULT, IMGPATH, recoded_name)
+    if os.path.exists(image_path_no_ext + ".jpg"):
+        return os.path.join(IMGPATH, recoded_name + ".jpg")
+    elif os.path.exists(image_path_no_ext + ".png"):
+        return os.path.join(IMGPATH, recoded_name + ".png")
+    return None
 
 def urls_from_save(filename):
 
