@@ -80,7 +80,13 @@ def backup_json(args):
 
         # Finally, include the save file itself.
         orig_json = os.path.join(orig_path, args.infile_name)
-        outfile.write(orig_json, os.path.basename(args.infile_name))
+        json_filename = os.path.basename(args.infile_name)
+        outfile.write(orig_json, "Mods/Workshop/" + json_filename)
+
+        # Store thumbnail image
+        thumbnail_name = json_filename.replace(".json", ".png")
+        thumbnail = os.path.join(orig_path, args.infile_name.replace(".json", ".png"))
+        outfile.write(thumbnail, "Mods/Workshop/" + thumbnail_name)
 
         # Store some metadata.
         outfile.put_metadata(comment=args.comment)
