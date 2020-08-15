@@ -169,6 +169,8 @@ def prefetch_file(filename,
                     extension = ".jpg"
                 elif "png" in content_disposition:
                     extension = ".png"
+                elif "mp3" in content_disposition:
+                    extension = ".mp3"
                 else:
                     errmsg = ("Error: can't find image extension for {}".format(url))
                     print_err(errmsg)
