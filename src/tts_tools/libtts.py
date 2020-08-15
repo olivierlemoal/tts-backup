@@ -131,6 +131,8 @@ def find_image(url):
         return os.path.join(IMGPATH, recoded_name + ".jpg")
     elif os.path.exists(image_path_no_ext + ".png"):
         return os.path.join(IMGPATH, recoded_name + ".png")
+    elif os.path.exists(image_path_no_ext + ".mp3"):
+        return os.path.join(IMGPATH, recoded_name + ".mp3")
     return None
 
 def urls_from_save(filename):
